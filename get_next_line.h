@@ -6,7 +6,7 @@
 /*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/21 18:31:53 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/04/23 17:20:09 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/04/23 21:19:09 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 #endif
 
 char	*get_next_line(int fd);
-size_t	ft_strlen(const char *str);
+size_t	ft_strlen(const char *str, int check_nl);
 char	*ft_strjoin(char const *str, char const *add_str);
-char	*ft_gnl_remove_nl(char str[], int increment);
+void	ft_gnl_remove_nl(char *str);
 int		ft_is_contain_charset(int c, char const *set);
 
 #endif
