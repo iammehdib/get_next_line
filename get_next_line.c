@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
+/*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/27 16:21:44 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/04/29 11:48:47 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/01 19:42:41 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,19 +44,23 @@ char	*get_next_line(int fd)
 	char		*current_line;
 	ssize_t		bytes_read;
 
-	if (fd == -1)
+	if (fd == -1 || BUFFER_SIZE <= 0)
 		return (NULL);
-	current_line = NULL;
+	current_line = ft_strjoin(NULL, last_line);
+	if (current_line == NULL)
+		return (NULL);
 	while (1)
 	{
 		bytes_read = read(fd, last_line, BUFFER_SIZE);
 		if (bytes_read <= 0)
-			break;
+			break ;
 		last_line[bytes_read] = 0;
 		old_line = current_line;
 		current_line = ft_strjoin(old_line, last_line);
 		if (old_line != NULL)
 			free(old_line);
+		if (current_line == NULL)
+			return (NULL);
 		if (ft_is_contain_charset('\n', last_line) != -1)
 		{
 			ft_gnl_remove_nl(last_line);
