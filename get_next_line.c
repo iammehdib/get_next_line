@@ -6,7 +6,7 @@
 /*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 20:05:35 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/02 19:18:19 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/02 19:22:18 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ char	*get_next_line(int fd)
 		result_read = current_read_line(&buf, fd);
 		if (result_read == -1 || result_read == 0)
 		{
-			if (result_read == 0)
+			if (buf.size == 0)
 				return (NULL);
 			line = malloc(sizeof(char) + (buf.size + 1));
 			if (line == NULL)
