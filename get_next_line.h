@@ -6,12 +6,13 @@
 /*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/21 18:31:53 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/01 19:42:46 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/02 18:37:55 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
+# include <stddef.h>
 # include <string.h>
 # include <stdlib.h>
 # include <fcntl.h>
@@ -22,10 +23,15 @@
 # endif
 
 char	*get_next_line(int fd);
-size_t	ft_strlen(const char *str, int check_nl);
-char	*ft_strjoin(char const *s1, char const *s2);
-int		ft_is_contain_charset(int c, char const *set);
-char	*ft_substr(char const *s, unsigned int start, size_t len);
-char	*ft_strdup(const char *s);
+void	ft_strlcpy(char *dst, const char *src, size_t dsize);
+
+typedef struct s_buffer
+{
+	char	*content;
+	size_t	size;
+	size_t	current_read;
+}	t_buffer;
+
+void	free_buf(t_buffer *buf);
 
 #endif

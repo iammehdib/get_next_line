@@ -5,67 +5,110 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/04/27 16:21:44 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/01 19:42:41 by mbuchet          ###   ########.fr       */
+/*   Created: 2026/05/01 20:05:35 by mbuchet           #+#    #+#             */
+/*   Updated: 2026/05/02 19:18:19 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
-static	char	*get_next_line_utils(int bytes_read, char **current_line)
+// Function s'il trouve une ligne la supprimer du buffer
+void	delete_buffer(t_buffer *buf)
 {
-	if (bytes_read <= 0 && *current_line == NULL)
-		return (*current_line);
-	return (NULL);
+	size_t	new_size;
+	char	*new_content;
+
+	new_size = buf->size - buf->current_read;
+	if (new_size == 0)
+	{
+		free_buf(buf);
+		return ;
+	}
+	new_content = malloc(sizeof(char) * (new_size));
+	if (new_content == NULL)
+		return ;
+	ft_strlcpy(new_content, buf->content + buf->current_read, new_size);
+	free(buf->content);
+	buf->content = new_content;
+	buf->size = new_size;
+	buf->current_read = 0;
 }
 
-static void	ft_gnl_remove_nl(char *str)
+// Function qui check si \n ou 0 dans le str et qui extrait celui-ci
+char	*extract_line(t_buffer *buf)
 {
-	size_t	index;
-	size_t	i;
+	char	*line;
 
-	index = 0;
-	while (str[index] && str[index] != '\n')
-		index++;
-	if (str[index] == '\n')
-		index++;
-	i = 0;
-	while (index < ft_strlen(str, 0))
-		str[i++] = str[index++];
-	while (i <= ft_strlen(str, 0))
-		str[i++] = 0;
+	if (buf->content == NULL)
+		return (NULL);
+	while (buf->current_read < buf->size)
+	{
+		if (buf->content[buf->current_read] == '\n')
+			break ;
+		buf->current_read++;
+	}
+	if (buf->current_read == buf->size)
+		return (0);
+	line = malloc(sizeof(char) * (++buf->current_read + 1));
+	if (line == NULL)
+		return (NULL);
+	line[buf->current_read] = 0;
+	ft_strlcpy(line, buf->content, buf->current_read);
+	delete_buffer(buf);
+	return (line);
+}
+
+// Function qui rmplit le buffer en lisant la suite
+ssize_t	current_read_line(t_buffer *buf, int fd)
+{
+	char	*new_buf;
+	ssize_t	bytes_read;
+
+	new_buf = malloc(sizeof(char) * (buf->size + BUFFER_SIZE));
+	if (new_buf == NULL)
+		return (-1);
+	if (buf->size > 0)
+	{
+		ft_strlcpy(new_buf, buf->content, buf->size);
+		free(buf->content);
+	}
+	buf->content = new_buf;
+	bytes_read = read(fd, buf->content + buf->size, BUFFER_SIZE);
+	if (bytes_read == 0 || bytes_read == -1)
+	{
+		free(buf->content);
+		buf->content = NULL;
+	}
+	if (bytes_read != -1)
+		buf->size += bytes_read;
+	return (bytes_read);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	last_line[BUFFER_SIZE + 1];
-	char		*old_line;
-	char		*current_line;
-	ssize_t		bytes_read;
+	static t_buffer	buf = {.content = 0, .size = 0, .current_read = 0};
+	ssize_t			result_read;
+	char			*line;
 
-	if (fd == -1 || BUFFER_SIZE <= 0)
-		return (NULL);
-	current_line = ft_strjoin(NULL, last_line);
-	if (current_line == NULL)
+	if (fd == -1)
 		return (NULL);
 	while (1)
 	{
-		bytes_read = read(fd, last_line, BUFFER_SIZE);
-		if (bytes_read <= 0)
+		line = extract_line(&buf);
+		if (line != NULL)
 			break ;
-		last_line[bytes_read] = 0;
-		old_line = current_line;
-		current_line = ft_strjoin(old_line, last_line);
-		if (old_line != NULL)
-			free(old_line);
-		if (current_line == NULL)
-			return (NULL);
-		if (ft_is_contain_charset('\n', last_line) != -1)
+		result_read = current_read_line(&buf, fd);
+		if (result_read == -1 || result_read == 0)
 		{
-			ft_gnl_remove_nl(last_line);
-			return (ft_substr(current_line, 0, ft_strlen(current_line, 0) - ft_strlen(last_line, 0)));
+			if (result_read == 0)
+				return (NULL);
+			line = malloc(sizeof(char) + (buf.size + 1));
+			if (line == NULL)
+				return (NULL);
+			ft_strlcpy(line, buf.content, buf.size);
+			line[buf.size] = 0;
+			free_buf(&buf);
 		}
 	}
-	return (get_next_line_utils(bytes_read, &current_line));
+	return (line);
 }
