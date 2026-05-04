@@ -6,7 +6,7 @@
 /*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/21 18:31:53 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/03 18:39:14 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/04 18:31:12 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 # endif
 
 char	*get_next_line(int fd);
-void	ft_strlcpy(char *dst, const char *src, size_t dsize);
 
 typedef struct s_buffer
 {
@@ -32,6 +31,7 @@ typedef struct s_buffer
 	size_t	current_read;
 }	t_buffer;
 
+void	ft_strlcpy(char *dst, const char *src, size_t dsize);
 void	free_buf(t_buffer *buf);
 void	buffer_realloc_head(t_buffer *buf, size_t new_size);
 
