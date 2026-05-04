@@ -19,11 +19,41 @@ From the root of the repository, run:
 This generates:
 - `get_next_line.a`
 
-### Clean / Rebuild
-- `make fclean` (remove generated files)
-- `make re` (rebuild from scratch)
+### How to compile
+
+- `make` → compile the project and generate `get_next_line.a`
+- `make all` → same as `make`
+- `make clean` → remove object files (`.o`)
+- `make fclean` → remove object files and the library (`get_next_line.a`)
+- `make re` → fully rebuild the project (fclean + all)
+
 
 Tested on **Ubuntu** (42 Brussels environment and WSL from Windows 11).
+
+### Usage
+
+Example of how to use `get_next_line`:
+
+```c
+#include "get_next_line.h"
+#include <stdio.h>
+
+int main(void)
+{
+    int fd = open("file.txt", O_RDONLY);
+    char *line;
+
+    if (fd < 0)
+        return (1);
+
+    while ((line = get_next_line(fd)) != NULL)
+    {
+        printf("%s", line);
+        free(line);
+    }
+    close(fd);
+    return (0);
+}```
 
 ## Algorithm and data structure (explanation + justification)
 
