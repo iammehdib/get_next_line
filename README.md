@@ -53,7 +53,8 @@ int main(void)
     }
     close(fd);
     return (0);
-}```
+}
+```
 
 ## Algorithm and data structure (explanation + justification)
 
