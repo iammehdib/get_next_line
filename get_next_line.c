@@ -6,13 +6,12 @@
 /*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 20:05:35 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/03 18:39:22 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/04 18:18:58 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-// Function qui check si \n ou 0 dans le str et qui extrait celui-ci
 char	*extract_line(t_buffer *buf)
 {
 	char	*line;
@@ -36,7 +35,6 @@ char	*extract_line(t_buffer *buf)
 	return (line);
 }
 
-// Function qui rmplit le buffer en lisant la suite
 ssize_t	current_read_line(t_buffer *buf, int fd)
 {
 	ssize_t	bytes_read;
