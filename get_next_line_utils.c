@@ -6,12 +6,11 @@
 /*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 20:09:19 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/03 18:39:30 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/04 20:16:02 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdlib.h>
 
 void	ft_strlcpy(char *dst, const char *src, size_t dsize)
 {
