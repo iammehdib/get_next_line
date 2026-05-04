@@ -6,13 +6,14 @@
 /*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 20:05:35 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/04 18:18:58 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/04 18:31:27 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <unistd.h>
 
-char	*extract_line(t_buffer *buf)
+static char	*extract_line(t_buffer *buf)
 {
 	char	*line;
 
@@ -25,7 +26,7 @@ char	*extract_line(t_buffer *buf)
 		buf->current_read++;
 	}
 	if (buf->current_read == buf->size)
-		return (0);
+		return (NULL);
 	line = malloc(sizeof(char) * (++buf->current_read + 1));
 	if (line == NULL)
 		return (NULL);
@@ -35,7 +36,7 @@ char	*extract_line(t_buffer *buf)
 	return (line);
 }
 
-ssize_t	current_read_line(t_buffer *buf, int fd)
+static ssize_t	current_read_line(t_buffer *buf, int fd)
 {
 	ssize_t	bytes_read;
 
