@@ -3,53 +3,35 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
+/*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 20:05:35 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/04 22:50:20 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/05 03:26:59 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 
-/*static void	make_buffer_for_get_next_line(t_buffer *buf, char *line, size_t new_size)
+static void	fill_buffer(t_buffer *buf, size_t new_size)
 {
 	size_t	cut_head;
-	char 	array[new_size];
+	size_t	index;
 
-	if (buf->size == 0)
-		return ;
-	cut_head = buf->size - buf->current_read;
 	if (new_size > buf->size)
 		cut_head = 0;
 	else
 		cut_head = buf->size - new_size;
-	ft_strlcpy(array, buf->content + cut_head, buf->size);
-	array[new_size] = 0;
-	//free(buf->content);
-	//buf->content = array;
-	//buf->current_read -= cut_head;
-	printf("[ar size: %zu, arr: %s]", new_size, array);
+	index = 0;
+	while (index < new_size)
+	{
+		buf->content[index] = buf->content[cut_head + index];
+		index++;
+	}
+	buf->content[new_size] = 0;
+	buf->size = new_size;
+	buf->current_read = 0;
 }
-
-static void	make_buffer_for_get_next_line2(t_buffer *buf, size_t new_size)
-{
-	size_t	cut_head;
-	char	array[new_size];
-
-	if (new_size > buf->size)
-		cut_head = 0;
-	else
-		cut_head = buf->size - new_size;
-	buf->size = buf->size - cut_head;
-	if (buf->content != NULL)
-		ft_strlcpy(array, buf->content + cut_head, buf->size);
-	free(buf->content);
-	array[new_size] = 0;
-	buf->content = array;
-	buf->current_read -= cut_head;
-}*/
 
 static char	*extract_line(t_buffer *buf)
 {
@@ -70,10 +52,7 @@ static char	*extract_line(t_buffer *buf)
 		return (NULL);
 	line[buf->current_read] = 0;
 	ft_strlcpy(line, buf->content, buf->current_read);
-	//printf("[before : %s, %s, %zu, %zu]\n", buf->content, line, buf->current_read, buf->size);
-	//buffer_realloc_head(buf, buf->size - buf->current_read);
-	make_buffer_for_get_next_line2(buf, buf->size - buf->current_read);
-	//printf("[after : %s, %s, %zu, %zu]\n", buf->content, line, buf->current_read, buf->size);
+	fill_buffer(buf, buf->size - buf->current_read);
 	return (line);
 }
 
@@ -88,7 +67,7 @@ static ssize_t	current_read_line(t_buffer *buf, int fd)
 	return (bytes_read);
 }
 
-static	char*	get_next_line_end(t_buffer *buf, char *line, int fd)
+static char	*get_next_line_end(t_buffer *buf, char *line)
 {
 	if (buf->size == 0)
 	{
@@ -109,7 +88,7 @@ char	*get_next_line(int fd)
 	ssize_t			result_read;
 	char			*line;
 
-	if (fd == -1)
+	if (fd == -1 || BUFFER_SIZE <= 0)
 		return (NULL);
 	while (1)
 	{
@@ -119,7 +98,7 @@ char	*get_next_line(int fd)
 		result_read = current_read_line(&buf, fd);
 		if (result_read == -1 || result_read == 0)
 		{
-			line = get_next_line_end(&buf, line, fd);
+			line = get_next_line_end(&buf, line);
 			break ;
 		}
 	}
