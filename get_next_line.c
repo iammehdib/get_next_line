@@ -6,12 +6,11 @@
 /*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 20:05:35 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/05 03:26:59 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/05 03:37:14 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#include <stdio.h>
 
 static void	fill_buffer(t_buffer *buf, size_t new_size)
 {
