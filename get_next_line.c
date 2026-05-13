@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/01 20:05:35 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/05 03:37:14 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/13 10:30:10 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,10 @@ static ssize_t	current_read_line(t_buffer *buf, int fd)
 
 	buffer_realloc_head(buf, buf->size + BUFFER_SIZE);
 	bytes_read = read(fd, buf->content + buf->size, BUFFER_SIZE);
-	if (bytes_read != -1)
+	if (bytes_read >= 0)
 		buf->size += bytes_read;
+	else
+		free_buf(buf);
 	return (bytes_read);
 }
 
