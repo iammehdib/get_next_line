@@ -1,36 +1,36 @@
 _This project has been created as part of the 42 curriculum by mbuchet._
 
 ## Description
+
 **get_next_line** is a utility function that retrieves the next line on each new call.
+
 Its goal is to better understand:
-- learn the 'read' function in C
-- a project with a huge potential for memory leak
-- learn to truly understand the power of pointers
+
+- the `read` function in C
+- memory management and leak prevention
+- the power of pointers
 
 Reference:
+
 - https://man7.org/linux/man-pages/man2/read.2.html
 
-## Instructions
+---
 
-### Build
-From the root of the repository, run:
-- `make`
+## Compilation
 
-This generates:
-- `get_next_line.a`
+Compile the project with:
 
-### How to compile
+```bash
+cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 *.c
+```
 
-- `make` → compile the project and generate `get_next_line.a`
-- `make all` → same as `make`
-- `make clean` → remove object files (`.o`)
-- `make fclean` → remove object files and the library (`get_next_line.a`)
-- `make re` → fully rebuild the project (fclean + all)
+This generates the executable with the chosen `BUFFER_SIZE`.
 
+Tested on **Ubuntu** (42 Brussels environment and WSL on Windows 11).
 
-Tested on **Ubuntu** (42 Brussels environment and WSL from Windows 11).
+---
 
-### Usage
+## Usage
 
 Example of how to use `get_next_line`:
 
@@ -56,58 +56,97 @@ int main(void)
 }
 ```
 
-## Algorithm and data structure (explanation + justification)
+---
 
-### Algorithm (Parsing / Dispatch)
+## Algorithm and Data Structure
+
+### Algorithm
 
 The function initializes a structure called `t_buffer`, which contains:
 
-* `content`: the buffer holding data for the next function call
-* `size`: the current size of the stored content
-* `current_read`: the current write position within the buffer
+* `content`: buffer holding stored data
+* `size`: current size of the stored content
+* `current_read`: current position inside the buffer
 
-An infinite loop is used to extract the first line using `extract_line`.
-Inside this function, memory is pre-allocated up to the next `\n`. If possible, data is written into `buf.content` using `buffer_realloc_head`, which dynamically expands the buffer when needed.
+An internal loop extracts the next line using `extract_line`.
 
-At this point, the function determines the length of the line and allocates the required memory for it.
+Memory is dynamically expanded using `buffer_realloc_head` whenever additional space is needed. The function then allocates enough memory for the extracted line and returns it.
 
-The loop then continues and calls `current_read_line`, which reads `BUFFER_SIZE` bytes at a time into `buf.content`.
+Reading is performed through `current_read_line`, which reads `BUFFER_SIZE` bytes at a time.
 
-If the end of the file is reached or an error occurs, the entire buffer is freed using `free_buf`.
+If EOF or an error occurs, allocated memory is cleaned using `free_buf`.
 
-**Why this approach?**
-- If I ever want to support multiple file descriptors, it will be easy to extend.
-- The code is clean, readable, and lightweight. I avoid relying too much on libft functions and instead implement new ones tailored for optimized behavior specific to this function.
+The remaining data after a newline is moved at the beginning of the buffer using `fill_buffer`.
 
-### Data structures
-The function initializes a structure called `t_buffer`, which contains:
+When the file reaches EOF without a trailing newline, the remaining content is returned through `get_next_line_end`.
 
-* `content`: the buffer holding data for the next function call
-* `size`: the current size of the stored content
-* `current_read`: the current write position within the buffer
+### Why this approach?
 
-The main function only keeps the extracted line and returns it as the current line.
+* Easy to extend for multiple file descriptors
+* Lightweight and readable implementation
+* Custom utility functions optimized specifically for this project
 
-## How it works (overview)
+---
 
-### Main Functions
+## Main Functions
 
-* `char *get_next_line(int fd)`: main function
-* `static char *extract_line(t_buffer *buf)`: extracts the target line
-* `static ssize_t current_read_line(t_buffer *buf, int fd)`: reads the current line
+### Core Functions
+
+* `char *get_next_line(int fd)`
+  Main function that reads and returns the next line from a file descriptor.
+
+* `static char *extract_line(t_buffer *buf)`
+  Searches for a newline in the buffer, allocates memory for the line, and extracts it.
+
+* `static ssize_t current_read_line(t_buffer *buf, int fd)`
+  Reads `BUFFER_SIZE` bytes from the file descriptor and appends them to the buffer.
+
+* `static char *get_next_line_end(t_buffer *buf, char *line)`
+  Handles the end of the file and returns the remaining content if no newline is left.
+
+* `static void fill_buffer(t_buffer *buf, size_t new_size)`
+  Shifts the remaining unread content to the beginning of the buffer after a line extraction.
 
 ### Utility Functions
 
-* `void ft_strlcpy(char *dst, const char *src, size_t dsize)`: safely copies a string from `src` to `dst`
-* `void free_buf(t_buffer *buf)`: frees all memory contained in `buf`
-* `void buffer_realloc_head(t_buffer *buf, size_t new_size)`: reallocates and expands the buffer memory when needed
+* `void ft_strlcpy(char *dst, const char *src, size_t dsize)`
+  Safely copies a string from `src` to `dst`.
 
-## Resources (references + AI usage)
+* `void free_buf(t_buffer *buf)`
+  Frees the allocated memory inside the buffer structure.
+
+* `void buffer_realloc_head(t_buffer *buf, size_t new_size)`
+  Reallocates and expands the buffer memory when additional space is required.
+
+---
+
+## Buffer Structure
+
+```c
+typedef struct s_buffer
+{
+    char    *content;
+    size_t  size;
+    size_t  current_read;
+}   t_buffer;
+```
+
+### Structure Fields
+
+* `content` → stores buffered data between function calls
+* `size` → current amount of stored data
+* `current_read` → current reading index inside the buffer
+
+---
+
+## Resources
 
 ### References
-- 42 subject PDF (get_next_line, version 12.1, 42 Brussels)
-- `read` manual: https://man7.org/linux/man-pages/man2/read.2.html
 
-### AI usage
-AI was used to help identify certain memory leaks and to improve my ability to detect them later.
+* 42 subject PDF (`get_next_line`, version 12.1)
+* `read` manual: [https://man7.org/linux/man-pages/man2/read.2.html](https://man7.org/linux/man-pages/man2/read.2.html)
+
+### AI Usage
+
+AI was used to help identify memory leaks and improve debugging skills.
 This README was translated from French to English.
