@@ -24,7 +24,7 @@ Compile your own test program with:
 cc -Wall -Wextra -Werror -D BUFFER_SIZE=42 *.c
 ```
 
-This command generates the executable using the specified BUFFER_SIZE.
+This command generates the executable using the specified `BUFFER_SIZE`.
 
 Tested on **Ubuntu** (42 Brussels environment and WSL on Windows 11).
 
