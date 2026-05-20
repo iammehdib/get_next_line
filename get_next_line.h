@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mbuchet <mbuchet@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mbuchet <mbuchet@student.42belgium.be>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/21 18:31:53 by mbuchet           #+#    #+#             */
-/*   Updated: 2026/05/05 03:38:00 by mbuchet          ###   ########.fr       */
+/*   Updated: 2026/05/20 16:40:26 by mbuchet          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,11 @@
 
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 42
+# endif
+
+# if BUFFER_SIZE > 8000000
+#  undef BUFFER_SIZE
+#  define BUFFER_SIZE 8000000
 # endif
 
 char	*get_next_line(int fd);
